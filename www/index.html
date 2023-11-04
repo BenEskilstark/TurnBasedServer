@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+  </head>
+  <body>
+    <div id="container" class="container"></div>
+
+    <script type="text/javascript">
+      ID = -1
+
+      fetch('http://localhost:8000/id')
+        .then(res => {
+          return res.json()
+        })
+        .then(res => {
+          ID = res.id;
+        })
+
+      const endTurn = function() {
+        const startTime = new Date();
+        fetch('http://localhost:8000/turn',
+              {method: 'POST', body: JSON.stringify({ID})})
+          .then(res => {
+            const endTime = new Date();
+            console.log(res)
+            console.log(endTime - startTime)
+            return res.json
+          })
+      }
+    </script>
+
+    <button
+      style="margin: 200 auto; display: block; height: 40px; width: 100px;"
+      onclick="endTurn()"
+    >
+      End Turn
+    </button>
+
+    <script type="text/javascript" src="bin/bundle.js"></script>
+  </body>
+</html>
