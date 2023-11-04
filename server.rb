@@ -10,13 +10,19 @@ end
 
 
 class Client
-  attr_accessor :id, :my_turn?
+  attr_accessor :id, :my_turn
+  alias :my_turn? :my_turn
 
-  def initialize(id:)
+  def initialize(id)
     @id, @my_turn = id, false
+  end
+
+  def to_s()
+    "" + self.id.to_s + " my_turn? " + self.my_turn?.to_s
   end
 end
 
+clients = {}
 nextID = 0
 
 get '/' do
@@ -25,14 +31,20 @@ end
 
 get '/id' do
   content_type :json
-  {id: nextID += 1}.to_json
+  id = nextID += 1
+  clients[id] = Client.new(id)
+  clients[id].my_turn = true
+  {id: id}.to_json
 end
 
 post '/turn' do
   puts "TURN received"
-  client_id = (JSON.parse request.body.read)["ID"]
-  puts client_id
+  client = clients[(JSON.parse request.body.read)["ID"]]
+  client.my_turn = false
+  puts client.to_s
   sleep(2)
+  client.my_turn = true
+  puts client.to_s
   return 200
 end
 
