@@ -3,18 +3,26 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
   </head>
   <body>
-    <div id="container" class="container"></div>
 
     <script type="text/javascript">
       ID = -1
 
       fetch('http://localhost:8000/id')
-        .then(res => {
-          return res.json()
-        })
-        .then(res => {
-          ID = res.id;
-        })
+        .then(res => res.json())
+        .then(res => ID = res.id)
+
+      const newGame = function() {
+        fetch('http://localhost:8000/new_game',
+              {method: 'POST', body: JSON.stringify({ID})})
+      }
+
+      const listGames = function() {
+        fetch('http://localhost:8000/list_games')
+          .then(res => res.json())
+          .then(res => {
+            console.log(res)
+          })
+      }
 
       const endTurn = function() {
         const startTime = new Date();
@@ -29,12 +37,26 @@
       }
     </script>
 
-    <button
-      style="margin: 200 auto; display: block; height: 40px; width: 100px;"
-      onclick="endTurn()"
-    >
-      End Turn
-    </button>
+    <div id="container" class="container">
+      <button
+        style="margin: 200 auto 0 auto; display: block; height: 40px; width: 100px;"
+        onclick="newGame()"
+      >
+        New Game
+      </button>
+      <button
+        style="margin: auto; display: block; height: 40px; width: 100px;"
+        onclick="listGames()"
+      >
+        List Games
+      </button>
+      <button
+        style="margin: auto; display: block; height: 40px; width: 100px;"
+        onclick="endTurn()"
+      >
+        End Turn
+      </button>
+    </div>
 
     <script type="text/javascript" src="bin/bundle.js"></script>
   </body>
