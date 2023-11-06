@@ -14,26 +14,16 @@ end
 
 server = GameServer.new
 
-get '/' do
-  send_file File.join(__dir__, '../www/index.html')
-end
 
 get '/id' do
-  content_type :json
   id = server.nextClientID += 1
   {id: id}.to_json
-end
-
-post '/turn' do
-  puts "TURN received"
-  clientID = (JSON.parse request.body.read)["ID"]
-  sleep(2)
-  return 200
 end
 
 post '/new_game' do
   clientID = (JSON.parse request.body.read)["ID"]
   server.new_game(clientID)
+  200
 end
 
 get '/list_games' do
@@ -41,7 +31,32 @@ get '/list_games' do
 end
 
 post '/join_game' do
+  req_body = JSON.parse request.body.read
+  server.games[req_body["gameID"]].add_player(req_body["ID"])
+  200
+end
 
+post '/ready' do
+  req_body = JSON.parse request.body.read
+  server.games[req_body["gameID"]].ready(req_body["ID"])
+end
+
+post '/start_game' do
+  req_body = JSON.parse request.body.read
+  server.games[req_body["gameID"]].start
+  200
+end
+
+
+post '/turn' do
+  clientID = (JSON.parse request.body.read)["ID"]
+  sleep(2)
+  200
+end
+
+# regular files
+get '/' do
+  send_file File.join(__dir__, '../www/index.html')
 end
 
 get '/*' do |path|

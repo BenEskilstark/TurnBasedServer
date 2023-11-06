@@ -1,0 +1,15 @@
+
+  - don't allow creating/joining more than one game
+  - allow leaving a game
+  - allow ending/deleting a game
+  - only allow host to start their own game
+    - could use sinatra conditions for this
+  - ready state before starting a game
+    - keeps the request open until the game starts
+
+  - could associate players with sinatra sessions
+
+  - turns
+    - increment to each turn
+    - allow sending game information on your turn
+    - send that information to all other players
