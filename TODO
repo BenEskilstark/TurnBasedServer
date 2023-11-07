@@ -1,3 +1,10 @@
+  - try gem install rainbows on mac
+
+  - try setting up stream connections as soon as you
+    join the server so that you can receive all actions
+    in the form {type: 'ACTION', ...} so they can be
+    handled by reducers
+
 
   - don't allow creating/joining more than one game
   - allow leaving a game

@@ -1,12 +1,13 @@
 
 class Game
-  attr_accessor :id, :clients, :started, :turn_index, :ready
+  attr_accessor :id, :clients, :started, :turn_index, :ready, :connections
   alias :started? :started
 
   def initialize(id, hostID)
     @id, @clients = id, [hostID]
     @ready = [true]
     @turn_index, @started = 0, false
+    @connections = {}
   end
 
   def to_s()
@@ -18,7 +19,7 @@ class Game
      started: @started, ready: @ready}
   end
 
-  def ready(clientID)
+  def set_ready(clientID)
     i = @clients.find_index(clientID)
     return if i == nil
     @ready[i] = true

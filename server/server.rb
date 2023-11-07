@@ -36,15 +36,35 @@ post '/join_game' do
   200
 end
 
-post '/ready' do
+post '/ready', provides: 'text/event-stream' do
   req_body = JSON.parse request.body.read
-  server.games[req_body["gameID"]].ready(req_body["ID"])
+  game = server.games[req_body["gameID"]]
+  clientID = req_body["ID"]
+  game.set_ready(clientID)
+  stream(:keep_open) do |out|
+    game.connections[clientID] = [] << out
+  end
 end
 
 post '/start_game' do
   req_body = JSON.parse request.body.read
-  server.games[req_body["gameID"]].start
-  200
+  game = server.games[req_body["gameID"]]
+  if game.ready.include? false
+    return 403
+  end
+
+  game.start
+  stream(:keep_open) do |out|
+    game.connections[req_body["ID"]] = [] << out
+  end
+
+  # also tell ready-and-waiting clients their game has started
+  game.connections.each do |clientID, conn|
+    conn << {started: true}.to_json
+    # conn.close
+  end
+
+  204 # response without body
 end
 
 
